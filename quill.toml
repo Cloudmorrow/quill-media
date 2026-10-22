@@ -1,0 +1,81 @@
+# Media: every photo and video in your drive, as pictures. It shows the
+# folders you pick — My Files › Photos and My Files › Videos to start with,
+# and any others you add — as a wall of thumbnails you can filter, and you
+# give each one stars. A video's picture is a frame of it, which the server
+# draws with ffmpeg; the install brings it. See CLAUDE.md for the format.
+
+[quill]
+id = "media"
+name = "Media"
+version = "1.0.0"
+summary = "Every photo and video in your drive, as pictures: filter them and give them stars."
+category = "personal"
+icon = "picture-frame"
+publisher = "Cloudmorrow"
+license = "AGPL-3.0-or-later"
+code = "quill.py"
+features = [
+  "Every photo and video in My Files › Photos and My Files › Videos, as thumbnails, subfolders included",
+  "Add any other folder, in My Files or in a share, and take it away again",
+  "Give a photo or a video one to five stars",
+  "Filter by photos or videos, by stars and by folder; newest first, oldest first, by name or by stars",
+  "Open one to see it, save it or share it; other Quills add their buttons there (CutMorrow's Edit this video)",
+  "The same on the web and the phone, in the terminal (the picture beside the list) and on the command line",
+]
+
+[uses]
+datamodels = ["file"]
+
+# The two folders everybody starts with, made the first time they look.
+[[datasets]]
+id = "folders"
+model = "media.folder"
+seed = "per-owner"
+scope = "personal"
+records = [{ path = "Photos", share = "my-files" }, { path = "Videos", share = "my-files" }]
+
+# -- screens -------------------------------------------------------------------------
+# The wall of pictures, with its filters, and under it the folders it shows.
+[[screens]]
+id = "media"
+label = "Media"
+view = "media"
+model = "media.rating"
+
+# -- actions -------------------------------------------------------------------------
+# Stars on a photo or a video: the gallery's stars press this, with the number.
+[[actions]]
+id = "rate"
+label = "Rate"
+on = "file"
+description = "Gives a photo or a video 1 to 5 stars; 0 takes its stars away."
+[actions.fields]
+stars = { kind = "int", required = true, description = "0 to 5" }
+
+[[actions]]
+id = "add-folder"
+label = "Add a folder"
+tone = "primary"
+description = "Shows the photos and videos in another folder too, its subfolders included."
+[actions.fields]
+path = { kind = "string", required = true, label = "Folder", description = "Inside the share, like Holiday/2026" }
+share = { kind = "string", label = "Share", description = "The share it is in; My Files when left out" }
+
+[[actions]]
+id = "remove-folder"
+label = "Stop showing"
+on = "media.folder"
+tone = "danger"
+confirm = "Stop showing this folder in Media? The files stay where they are."
+description = "Takes the folder out of Media. Nothing in it is deleted."
+
+[[actions]]
+id = "refresh"
+label = "Refresh"
+assistant = false
+
+# A video's thumbnail is a frame of it, which the server draws with ffmpeg:
+# the install fetches the catalog's static build for this machine. Nobody
+# installs anything on the server by hand.
+[requires]
+runtimes = ["ffmpeg"]

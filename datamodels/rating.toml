@@ -1,0 +1,16 @@
+# How many stars somebody gave a photo or a video in their drive. The file
+# itself is not touched: a rating is a record of its own, by the file's id,
+# so the same file keeps its stars wherever it is shown. None is no record.
+
+[datamodel]
+id = "media.rating"
+version = 1
+label = "Rating"
+description = "The stars somebody gave a photo or a video: 1 to 5."
+scopes = ["personal"]
+title = "name"
+
+[fields]
+source = { kind = "string", required = true, indexed = true, label = "File" }
+name = { kind = "string", required = true, description = "The file's name when it was rated" }
+stars = { kind = "int", required = true, indexed = true, label = "Stars" }

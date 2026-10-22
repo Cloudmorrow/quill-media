@@ -1,0 +1,15 @@
+# A folder Media shows the photos and videos of, everything under it
+# included. Everybody starts with My Files › Photos and My Files › Videos;
+# more can be added, from My Files or from a share.
+
+[datamodel]
+id = "media.folder"
+version = 1
+label = "Media folder"
+description = "A folder whose photos and videos Media shows, its subfolders included."
+scopes = ["personal"]
+title = "path"
+
+[fields]
+path = { kind = "string", required = true, label = "Folder", description = "Inside the share, like Photos or Holiday/2026" }
+share = { kind = "string", default = "my-files", label = "Share", description = "my-files, or the name of a share" }
