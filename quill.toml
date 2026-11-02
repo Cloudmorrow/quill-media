@@ -7,7 +7,7 @@
 [quill]
 id = "media"
 name = "Media"
-version = "1.0.0"
+version = "1.1.0"
 summary = "Every photo and video in your drive, as pictures: filter them and give them stars."
 category = "personal"
 icon = "picture-frame"
@@ -16,7 +16,7 @@ license = "AGPL-3.0-or-later"
 code = "quill.py"
 features = [
   "Every photo and video in My Files › Photos and My Files › Videos, as thumbnails, subfolders included",
-  "Add any other folder, in My Files or in a share, and take it away again",
+  "Folders, behind the gear beside the title: add any other folder, in My Files or in a share, and take it away again",
   "Give a photo or a video one to five stars",
   "Filter by photos or videos, by stars and by folder; newest first, oldest first, by name or by stars",
   "Open one to see it, save it or share it; other Quills add their buttons there (CutMorrow's Edit this video)",
@@ -35,12 +35,20 @@ scope = "personal"
 records = [{ path = "Photos", share = "my-files" }, { path = "Videos", share = "my-files" }]
 
 # -- screens -------------------------------------------------------------------------
-# The wall of pictures, with its filters, and under it the folders it shows.
+# The wall of pictures, with its filters.
 [[screens]]
 id = "media"
 label = "Media"
 view = "media"
 model = "media.rating"
+
+# The folders it shows: your own settings, behind the gear beside the title
+# (`,` in the terminal), not a tab and not the foot of the wall.
+[[screens]]
+id = "folders"
+label = "Folders"
+view = "folders"
+settings = true
 
 # -- actions -------------------------------------------------------------------------
 # Stars on a photo or a video: the gallery's stars press this, with the number.

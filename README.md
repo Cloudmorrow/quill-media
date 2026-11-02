@@ -16,16 +16,16 @@ the command line by Cloudmorrow itself.
    one folder; sort newest or oldest first, by name, or by stars.
 4. Open one to see it — the photo, or the video playing — with what other
    Quills add to a file: CutMorrow's **Edit this video**, say.
-5. Under the pictures, **Folders**: add any other folder, in My Files or in a
-   share (its subfolders come with it), or stop showing one. Nothing in a
-   folder is ever changed or deleted by Media.
+5. The gear beside the title opens **Folders**, your settings: add any other
+   folder, in My Files or in a share (its subfolders come with it), or stop
+   showing one. Nothing in a folder is ever changed or deleted by Media.
 
 ## What it adds to your Cloudmorrow
 
 | | |
 | --- | --- |
 | Datamodels | uses the foundational `file`; introduces `media.rating` (the stars you gave a file, by its id) and `media.folder` (a folder Media shows; everybody starts with Photos and Videos) |
-| Screens | Media (a view: the gallery, its filters, and the folders) — on the phone, the web app, the terminal, `cm media`, and to your assistant |
+| Screens | Media (a view: the gallery and its filters) and Folders (your settings, behind the gear beside the title) — on the phone, the web app, the terminal, `cm media`, and to your assistant |
 | Actions | Rate (on a file: 0 to 5 stars), Add a folder, Stop showing (a folder), Refresh |
 | Code | `quill.py`, in the sandbox, as whoever uses it; reaches nothing outside |
 | Runtimes | **ffmpeg**, which the install brings (`[requires] runtimes`): the server draws each video's thumbnail with it. Without it a video shows as a plain tile |

@@ -26,8 +26,15 @@ def a_file(q, name, folder):
             q.seed(FILE, share="my-files", path="/".join(parts[:depth]), kind="folder")
     part = q._tmp / name
     part.write_bytes(b"\x00" * 16)
-    q.state.records.put(q._principal(), FILE, {"share": "my-files", "folder": folder, "name": name}, part)
-    return next(f for f in q.list(FILE, share="my-files", folder=folder) if f["name"] == name)
+    q.state.records.put(
+        q._principal(),
+        FILE,
+        {"share": "my-files", "folder": folder, "name": name},
+        part,
+    )
+    return next(
+        f for f in q.list(FILE, share="my-files", folder=folder) if f["name"] == name
+    )
 
 
 def gallery(q, **params):
@@ -55,7 +62,10 @@ def test_the_photos_and_videos_in_the_folders_are_tiles_and_nothing_else_is(q):
     assert tiles["rate"] == "rate" and tiles["stars"] == "stars"
     by_name = {t["fields"]["name"]: t["fields"] for t in tiles["records"]}
     assert by_name["beach.png"]["where"] == "My Files › Photos › Holiday 2026"
-    assert by_name["waves.mp4"]["badge"] == "▶ Video" and by_name["sunset.jpg"]["badge"] == ""
+    assert (
+        by_name["waves.mp4"]["badge"] == "▶ Video"
+        and by_name["sunset.jpg"]["badge"] == ""
+    )
     assert "2 photos and 1 video" in q.view("media").text()
 
 
@@ -87,10 +97,18 @@ def test_the_filters_pick_by_kind_stars_and_folder_and_the_sort_orders(q):
     assert names(gallery(q, folder=videos.id)) == ["b.mp4"]
     by_stars = [t["fields"]["name"] for t in gallery(q, sort="stars")["records"]]
     assert by_stars[:2] == ["a.jpg", "b.mp4"]
-    assert [t["fields"]["name"] for t in gallery(q, sort="name")["records"]] == ["a.jpg", "b.mp4", "c.jpg"]
+    assert [t["fields"]["name"] for t in gallery(q, sort="name")["records"]] == [
+        "a.jpg",
+        "b.mp4",
+        "c.jpg",
+    ]
     assert "1 of 2 photos and 1 video" in q.view("media", stars="4").text()
     # Nonsense in the address is no filter at all.
-    assert names(gallery(q, show="cats", stars="9", folder="nope")) == ["a.jpg", "b.mp4", "c.jpg"]
+    assert names(gallery(q, show="cats", stars="9", folder="nope")) == [
+        "a.jpg",
+        "b.mp4",
+        "c.jpg",
+    ]
 
 
 def test_another_folder_can_be_added_and_taken_away(q):
@@ -102,10 +120,18 @@ def test_another_folder_can_be_added_and_taken_away(q):
     assert "shown already" in q.act("add-folder", path="scans").error
     assert names(gallery(q)) == ["old.jpg"]
     assert "My Files › Scans" in q.view("media").text()
+    # The folders are the settings screen's, not the foot of the wall.
+    assert (
+        "Media shows the photos and videos in these folders"
+        not in q.view("media").text()
+    )
+    assert "My Files › Scans" in q.view("folders").text()
     scans = next(f for f in q.list(FOLDER) if f["path"] == "Scans")
     assert q.act("remove-folder", scans).ok
     assert names(gallery(q)) == []
-    assert q.list(FILE, share="my-files", folder="Scans/1990"), "the files stay where they are"
+    assert q.list(FILE, share="my-files", folder="Scans/1990"), (
+        "the files stay where they are"
+    )
 
 
 def test_a_folder_inside_another_one_shown_shows_its_files_once(q):
