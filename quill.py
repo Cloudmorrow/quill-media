@@ -1,4 +1,4 @@
-"""Media: the code behind the Media screen and its buttons.
+"""Media: the code behind the Media screen, its Folders settings and their buttons.
 
 Run in the sandbox as whoever is looking. The pictures are the files'
 own: a gallery tile is the file record, and the server makes its
@@ -12,14 +12,46 @@ from cloudmorrow.quill import Invalid, NotFound, Refused, action, error, toast, 
 
 FILE, FOLDER, RATING = "file", "media.folder", "media.rating"
 DRIVE = "my-files"
-PHOTO_SUFFIXES = (".jpg", ".jpeg", ".png", ".gif", ".webp", ".heic", ".heif", ".bmp", ".tif", ".tiff", ".avif")
-VIDEO_SUFFIXES = (".mp4", ".mov", ".m4v", ".mkv", ".webm", ".avi", ".mts", ".m2ts", ".3gp", ".mpg", ".mpeg", ".ogv")
+PHOTO_SUFFIXES = (
+    ".jpg",
+    ".jpeg",
+    ".png",
+    ".gif",
+    ".webp",
+    ".heic",
+    ".heif",
+    ".bmp",
+    ".tif",
+    ".tiff",
+    ".avif",
+)
+VIDEO_SUFFIXES = (
+    ".mp4",
+    ".mov",
+    ".m4v",
+    ".mkv",
+    ".webm",
+    ".avi",
+    ".mts",
+    ".m2ts",
+    ".3gp",
+    ".mpg",
+    ".mpeg",
+    ".ogv",
+)
 # Tiles in one go; "Show more" asks for this many again.
 PAGE = 300
 
 SHOW = [("", "Photos and videos"), ("photos", "Photos"), ("videos", "Videos")]
-STARS = [("", "Any stars")] + [(str(n), "★" * n + ("" if n == 5 else " and up")) for n in range(1, 6)]
-SORTS = [("", "Newest first"), ("oldest", "Oldest first"), ("name", "By name"), ("stars", "Most stars first")]
+STARS = [("", "Any stars")] + [
+    (str(n), "★" * n + ("" if n == 5 else " and up")) for n in range(1, 6)
+]
+SORTS = [
+    ("", "Newest first"),
+    ("oldest", "Oldest first"),
+    ("name", "By name"),
+    ("stars", "Most stars first"),
+]
 
 
 # -- what a file is ----------------------------------------------------------------------
@@ -41,7 +73,9 @@ def plural(count, one, many=None):
 
 
 def clean_path(path):
-    return "/".join(part for part in str(path or "").replace("\\", "/").split("/") if part.strip())
+    return "/".join(
+        part for part in str(path or "").replace("\\", "/").split("/") if part.strip()
+    )
 
 
 def where_said(share, path):
@@ -53,13 +87,22 @@ def where_said(share, path):
 # -- reading ------------------------------------------------------------------------------
 def folders(ctx):
     found = ctx.records.list(FOLDER)
-    return sorted(found, key=lambda f: (f.get("share") != DRIVE, str(f.get("share") or ""), str(f["path"]).lower()))
+    return sorted(
+        found,
+        key=lambda f: (
+            f.get("share") != DRIVE,
+            str(f.get("share") or ""),
+            str(f["path"]).lower(),
+        ),
+    )
 
 
 def files_in(ctx, folder):
     """Every photo and video under *folder*; None when the folder is not there (or not theirs)."""
     try:
-        listed = ctx.records.list(FILE, share=folder.get("share") or DRIVE, within=folder["path"])
+        listed = ctx.records.list(
+            FILE, share=folder.get("share") or DRIVE, within=folder["path"]
+        )
     except (NotFound, Refused, Invalid):
         return None
     return [f for f in listed if kind_of(f)]
@@ -111,7 +154,9 @@ def media(ctx):
     photos = sum(1 for _, f in everything if kind_of(f) == "photo")
     videos = len(everything) - photos
     picked = [
-        (folder, f) for folder, f in everything if (not show or kind_of(f) == show[:-1]) and stars_of(rated, f) >= least
+        (folder, f)
+        for folder, f in everything
+        if (not show or kind_of(f) == show[:-1]) and stars_of(rated, f) >= least
     ]
     if sort == "name":
         picked.sort(key=lambda pair: str(pair[1].get("name") or "").lower())
@@ -119,7 +164,10 @@ def media(ctx):
         picked.sort(key=lambda pair: str(pair[1].get("modified") or ""), reverse=True)
         picked.sort(key=lambda pair: stars_of(rated, pair[1]), reverse=True)
     else:
-        picked.sort(key=lambda pair: str(pair[1].get("modified") or ""), reverse=sort != "oldest")
+        picked.sort(
+            key=lambda pair: str(pair[1].get("modified") or ""),
+            reverse=sort != "oldest",
+        )
 
     tiles = []
     for folder, f in picked[:limit]:
@@ -134,17 +182,29 @@ def media(ctx):
         tiles.append(row)
 
     def here(**change):
-        params = {"show": show, "stars": str(least or ""), "sort": sort, "folder": only, **change}
+        params = {
+            "show": show,
+            "stars": str(least or ""),
+            "sort": sort,
+            "folder": only,
+            **change,
+        }
         return {k: v for k, v in params.items() if v}
 
     def menu(choices, current, name):
         label = dict(choices)[current]
         return ui.menu(
             label,
-            *(ui.button(said, go="media", params=here(**{name: key})) for key, said in choices if key != current),
+            *(
+                ui.button(said, go="media", params=here(**{name: key}))
+                for key, said in choices
+                if key != current
+            ),
         )
 
-    folder_choices = [("", "Every folder")] + [(f.id, where_said(f.get("share") or DRIVE, f["path"])) for f in shown]
+    folder_choices = [("", "Every folder")] + [
+        (f.id, where_said(f.get("share") or DRIVE, f["path"])) for f in shown
+    ]
     rated_count = sum(1 for _, f in everything if stars_of(rated, f))
     summary = f"{plural(photos, 'photo')} and {plural(videos, 'video')}"
     if rated_count:
@@ -178,14 +238,29 @@ def media(ctx):
     ]
     if len(picked) > limit:
         parts.append(
-            ui.button(f"Show {min(PAGE, len(picked) - limit)} more", go="media", params=here(limit=str(limit + PAGE)))
+            ui.button(
+                f"Show {min(PAGE, len(picked) - limit)} more",
+                go="media",
+                params=here(limit=str(limit + PAGE)),
+            )
         )
     if missing:
         parts.append(ui.text(f"Not there (yet): {', '.join(missing)}.", style="small"))
-    parts += [
-        ui.divider(),
-        ui.text("Folders", style="subtitle"),
-        ui.text("Media shows the photos and videos in these folders, and in every folder inside them.", style="muted"),
+    return ui.stack(*parts)
+
+
+# -- the folders: your settings ------------------------------------------------------------
+# Behind the gear beside Media's title (settings = true in quill.toml): the
+# folders the wall shows, and the buttons that add one and take one away.
+@view("folders")
+def folders_screen(ctx):
+    shown = folders(ctx)
+    return ui.stack(
+        ui.text("Folders", style="title"),
+        ui.text(
+            "Media shows the photos and videos in these folders, and in every folder inside them.",
+            style="muted",
+        ),
         ui.table(
             folder_rows(ctx, shown),
             columns=[("Folder", "where"), ("Holds", "holds")],
@@ -193,9 +268,11 @@ def media(ctx):
             actions=["remove-folder"],
             empty="No folders: Media shows nothing until you add one.",
         ),
-        ui.row(ui.button("Add a folder", action="add-folder"), ui.button("Refresh", action="refresh")),
-    ]
-    return ui.stack(*parts)
+        ui.row(
+            ui.button("Add a folder", action="add-folder"),
+            ui.button("Refresh", action="refresh"),
+        ),
+    )
 
 
 def folder_rows(ctx, shown):
@@ -232,7 +309,9 @@ def rate(ctx, file, stars=0):
         return None
     if found:
         first, *more = found
-        ctx.records.patch(RATING, first.id, {"stars": stars, "name": file["name"]}, rev=first.rev)
+        ctx.records.patch(
+            RATING, first.id, {"stars": stars, "name": file["name"]}, rev=first.rev
+        )
         for rating in more:
             ctx.records.delete(RATING, rating.id)
     else:
@@ -247,7 +326,10 @@ def add_folder(ctx, path, share=""):
     if not path:
         return error("Say which folder, like Holiday/2026")
     said = where_said(share, path)
-    if any(f["path"].lower() == path.lower() and (f.get("share") or DRIVE) == share for f in folders(ctx)):
+    if any(
+        f["path"].lower() == path.lower() and (f.get("share") or DRIVE) == share
+        for f in folders(ctx)
+    ):
         return error(f"{said} is shown already")
     if files_in(ctx, {"share": share, "path": path}) is None:
         return error(f"There is no folder {said}")
@@ -258,7 +340,9 @@ def add_folder(ctx, path, share=""):
 @action("remove_folder")
 def remove_folder(ctx, folder):
     ctx.records.delete(FOLDER, folder.id)
-    return toast(f"{where_said(folder.get('share') or DRIVE, folder['path'])} is no longer shown")
+    return toast(
+        f"{where_said(folder.get('share') or DRIVE, folder['path'])} is no longer shown"
+    )
 
 
 @action("refresh")
