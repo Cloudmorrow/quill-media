@@ -1,13 +1,15 @@
 # Media: every photo and video in your drive, as pictures. It shows the
 # folders you pick — My Files › Photos and My Files › Videos to start with,
-# and any others you add — as a wall of thumbnails you can filter, and you
-# give each one stars. A video's picture is a frame of it, which the server
-# draws with ffmpeg; the install brings it. See CLAUDE.md for the format.
+# and any others you add, picked from the drive — as a wall of pictures at
+# their own shapes, which you filter and give stars; one pressed opens the
+# viewer, across the screen. Photos and videos dropped on the wall go to
+# My Files › Photos and › Videos. A video's picture is a frame of it, which
+# the server draws with ffmpeg; the install brings it. See CLAUDE.md.
 
 [quill]
 id = "media"
 name = "Media"
-version = "1.1.0"
+version = "1.2.0"
 summary = "Every photo and video in your drive, as pictures: filter them and give them stars."
 category = "personal"
 icon = "picture-frame"
@@ -15,11 +17,13 @@ publisher = "Cloudmorrow"
 license = "AGPL-3.0-or-later"
 code = "quill.py"
 features = [
-  "Every photo and video in My Files › Photos and My Files › Videos, as thumbnails, subfolders included",
-  "Folders, behind the gear beside the title: add any other folder, in My Files or in a share, and take it away again",
+  "Every photo and video in My Files › Photos and My Files › Videos, subfolders included, as a wall of pictures at their own shapes",
+  "Press one and it opens across the screen: the photo, or the video playing; arrows (or keys, or a swipe) for the next and the one before, and a button for the whole screen",
+  "Drop photos and videos from your computer on the wall, or paste them, or press Add: photos go to My Files › Photos, videos to My Files › Videos",
+  "Folders, behind the gear beside the title: add any other folder — picked from My Files or a share, as deep as you like — and take it away again",
   "Give a photo or a video one to five stars",
   "Filter by photos or videos, by stars and by folder; newest first, oldest first, by name or by stars",
-  "Open one to see it, save it or share it; other Quills add their buttons there (CutMorrow's Edit this video)",
+  "Details on one to save it or share it; other Quills add their buttons there (CutMorrow's Edit this video)",
   "The same on the web and the phone, in the terminal (the picture beside the list) and on the command line",
 ]
 
@@ -60,13 +64,17 @@ description = "Gives a photo or a video 1 to 5 stars; 0 takes its stars away."
 [actions.fields]
 stars = { kind = "int", required = true, description = "0 to 5" }
 
+# Your setting, pressed on the Folders screen: on the web it opens the
+# drive's folders to pick one from — any share, any folder in it — with
+# "Add a folder" on the button that takes the one open.
 [[actions]]
 id = "add-folder"
 label = "Add a folder"
 tone = "primary"
+settings = true
 description = "Shows the photos and videos in another folder too, its subfolders included."
 [actions.fields]
-path = { kind = "string", required = true, label = "Folder", description = "Inside the share, like Holiday/2026" }
+path = { kind = "string", required = true, label = "Folder", pick = "folder", share = "share", description = "Inside the share, like Holiday/2026" }
 share = { kind = "string", label = "Share", description = "The share it is in; My Files when left out" }
 
 [[actions]]
@@ -80,6 +88,7 @@ description = "Takes the folder out of Media. Nothing in it is deleted."
 [[actions]]
 id = "refresh"
 label = "Refresh"
+settings = true
 assistant = false
 
 # A video's thumbnail is a frame of it, which the server draws with ffmpeg:
