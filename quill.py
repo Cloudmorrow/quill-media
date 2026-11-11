@@ -2,16 +2,20 @@
 
 Run in the sandbox as whoever is looking. The pictures are the files'
 own: a gallery tile is the file record, and the server makes its
-thumbnail (a video's is a frame of it, drawn with ffmpeg). Media keeps two
-things of its own: the folders somebody shows (`media.folder`) and the
-stars they gave (`media.rating`, by the file's id). Nothing here reads or
-changes a file.
+thumbnail (a video's is a frame of it, drawn with ffmpeg). The wall, the
+viewer a tile opens and the upload of what is dropped on it are the
+gallery's, drawn by Cloudmorrow; the gallery's `put` says where a photo
+and a video go. Media keeps two things of its own: the folders somebody
+shows (`media.folder`) and the stars they gave (`media.rating`, by the
+file's id). Nothing here reads or changes a file.
 """
 
 from cloudmorrow.quill import Invalid, NotFound, Refused, action, error, toast, ui, view
 
 FILE, FOLDER, RATING = "file", "media.folder", "media.rating"
 DRIVE = "my-files"
+# Where what lands on the wall goes: a photo here, a video there.
+PUT = {"image": (DRIVE, "Photos"), "video": (DRIVE, "Videos")}
 PHOTO_SUFFIXES = (
     ".jpg",
     ".jpeg",
@@ -79,7 +83,7 @@ def clean_path(path):
 
 
 def where_said(share, path):
-    """A folder as people say it: My Files › Photos, Family › 2026."""
+    """A folder as people say it: My Files › Photos, Family › 2026; a share's top is the share."""
     top = "My Files" if share == DRIVE else share
     return " › ".join([top, *[p for p in path.split("/") if p]])
 
@@ -231,9 +235,10 @@ def media(ctx):
             empty=(
                 "Nothing with these filters."
                 if everything
-                else "No photos or videos yet. Put them in My Files › Photos or My Files › Videos — from Files, "
-                "the phone's camera, the desktop app's mount or WebDAV — or add another folder."
+                else "No photos or videos yet. Drop some here, or put them in My Files › Photos or My Files › Videos — "
+                "from Files, the phone's camera, the desktop app's mount or WebDAV — or add another folder."
             ),
+            put=PUT,
         ),
     ]
     if len(picked) > limit:
@@ -320,11 +325,12 @@ def rate(ctx, file, stars=0):
 
 
 @action("add_folder")
-def add_folder(ctx, path, share=""):
+def add_folder(ctx, path="", share=""):
+    """A folder to show: picked from the drive on the web, typed elsewhere. A folder, not a whole share."""
     share = (share or "").strip() or DRIVE
     path = clean_path(path)
     if not path:
-        return error("Say which folder, like Holiday/2026")
+        return error(f"Pick a folder in {where_said(share, '')}, like Holiday/2026 — not the whole of it")
     said = where_said(share, path)
     if any(
         f["path"].lower() == path.lower() and (f.get("share") or DRIVE) == share

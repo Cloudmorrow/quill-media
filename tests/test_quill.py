@@ -60,6 +60,11 @@ def test_the_photos_and_videos_in_the_folders_are_tiles_and_nothing_else_is(q):
     tiles = gallery(q)
     assert names(tiles) == ["beach.png", "sunset.jpg", "waves.mp4"]
     assert tiles["rate"] == "rate" and tiles["stars"] == "stars"
+    # What lands on the wall goes by kind: a photo to Photos, a video to Videos.
+    assert tiles["put"] == [
+        {"kind": "image", "share": "my-files", "folder": "Photos"},
+        {"kind": "video", "share": "my-files", "folder": "Videos"},
+    ]
     by_name = {t["fields"]["name"]: t["fields"] for t in tiles["records"]}
     assert by_name["beach.png"]["where"] == "My Files › Photos › Holiday 2026"
     assert (
@@ -132,6 +137,23 @@ def test_another_folder_can_be_added_and_taken_away(q):
     assert q.list(FILE, share="my-files", folder="Scans/1990"), (
         "the files stay where they are"
     )
+
+
+def test_a_whole_share_is_not_a_folder(q):
+    """The picker's button at a share's top is refused in words: a folder in it, please."""
+    a_file(q, "deep.jpg", "Scans/1990")
+    assert "Pick a folder in My Files" in q.act("add-folder", path="/").error
+    assert "Pick a folder in family" in q.act("add-folder", path="//", share="family").error
+    assert q.act("add-folder", path="").error == "Folder is needed"
+    assert names(gallery(q)) == []
+
+
+def test_adding_a_folder_is_a_setting_off_the_wall(q):
+    """Add a folder and Refresh are pressed on the Folders screen, never a chip on the wall."""
+    actions = {a["id"]: a for a in q.manifest.actions}
+    assert actions["add-folder"]["settings"] is True and actions["refresh"]["settings"] is True
+    path, share = actions["add-folder"]["fields"]
+    assert path["pick"] == "folder" and path["share"] == "share" and path["required"]
 
 
 def test_a_folder_inside_another_one_shown_shows_its_files_once(q):
