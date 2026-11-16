@@ -5,6 +5,25 @@ stars. A [Quill](https://github.com/Cloudmorrow/cloudmorrow/blob/main/docs/QUILL
 for Cloudmorrow, drawn on the phone, in the web app, in the terminal and on
 the command line by Cloudmorrow itself.
 
+## Screens
+
+The wall, in a browser, on a phone and in the terminal:
+
+<p>
+<img src="screenshots/wall-desktop.webp" width="560" alt="Media in a browser: the wall of photos at their own shapes, with the filters above and the stars under each">
+<img src="screenshots/wall-phone.webp" width="140" alt="The same wall on a phone, two pictures wide">
+</p>
+<img src="screenshots/wall-tui.webp" width="700" alt="The same in the terminal: a row per picture with its stars, and the picture of the row you are on beside the list">
+
+One opened, and the Folders settings behind the gear:
+
+<p>
+<img src="screenshots/viewer-desktop.webp" width="560" alt="A photo opened across the screen, with the arrows to the next and the one before">
+<img src="screenshots/folders-desktop.webp" width="560" alt="Folders: the folders Media shows, each with how many photos and videos it holds, and Add a folder">
+</p>
+
+(Stock photos from picsum.photos, on a throwaway cloud made for the pictures.)
+
 ## How it works
 
 1. Open **Media**: every photo and video in My Files › Photos and
@@ -52,3 +71,9 @@ cm quill test            # tests/, against the real record store and gate
 cm quill test --sandbox  # the same, with quill.py in the sandbox
 cm quill dev --local     # a throwaway server here, reinstalled as you save
 ```
+
+The pictures in `screenshots/` (`<screen>-desktop.webp` 1600×1000,
+`<screen>-phone.webp` 780×1688, `<screen>-tui.webp` 1600×930, captioned in
+quill.toml's `[[screenshots]]`) are taken from a throwaway cloud seeded with
+stock photos, never from anybody's own cloud. Retake them when a screen
+changes.
