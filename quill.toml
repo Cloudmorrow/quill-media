@@ -9,7 +9,7 @@
 [quill]
 id = "media"
 name = "Media"
-version = "1.2.0"
+version = "1.2.1"
 summary = "Every photo and video in your drive, as pictures: filter them and give them stars."
 category = "personal"
 icon = "picture-frame"
@@ -90,6 +90,22 @@ id = "refresh"
 label = "Refresh"
 settings = true
 assistant = false
+
+# -- screenshots ---------------------------------------------------------------------
+# Pictures of each screen on the phone, in a browser and in the terminal, in
+# screenshots/: taken from a throwaway cloud with stock photos, never anybody's
+# own (see "Working on it" in the README). The catalog's page shows them.
+[[screenshots]]
+id = "wall"
+caption = "The wall: every photo and video at its own shape, newest first, with its stars"
+
+[[screenshots]]
+id = "viewer"
+caption = "One opened across the screen, with the arrows to the next and the one before"
+
+[[screenshots]]
+id = "folders"
+caption = "Folders, behind the gear: which folders Media shows, and adding one from the drive"
 
 # A video's thumbnail is a frame of it, which the server draws with ffmpeg:
 # the install fetches the catalog's static build for this machine. Nobody
