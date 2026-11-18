@@ -34,7 +34,7 @@ One opened, and the Folders settings behind the gear:
    playing. The arrows at its sides (or ← and →, or a swipe) go to the next
    and the one before; the button at the top right fills the whole screen;
    **Details** is the file's own sheet, with what other Quills add to a
-   file — CutMorrow's **Edit this video**, say.
+   file — Clipper's **Edit this video**, say.
 3. Tap the stars under one to give it 1 to 5; tap the lit one again to take
    them away. In the terminal, 0 to 5 on the row you are on.
 4. Filter with the menus above: photos or videos, how many stars at least,
@@ -59,7 +59,7 @@ One opened, and the Folders settings behind the gear:
 | Code | `quill.py`, in the sandbox, as whoever uses it; reaches nothing outside |
 | Runtimes | **ffmpeg**, which the install brings (`[requires] runtimes`): the server draws each video's thumbnail with it. Without it a video shows as a plain tile |
 
-Media needs no other Quill. CutMorrow requires it: installing CutMorrow
+Media needs no other Quill. Clipper requires it: installing Clipper
 installs Media first.
 
 ## Working on it

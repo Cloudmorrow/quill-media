@@ -9,7 +9,7 @@
 [quill]
 id = "media"
 name = "Media"
-version = "1.2.2"
+version = "1.2.3"
 summary = "Every photo and video in your drive, as pictures: filter them and give them stars."
 category = "creative"
 icon = "picture-frame"
@@ -23,7 +23,7 @@ features = [
   "Folders, behind the gear beside the title: add any other folder — picked from My Files or a share, as deep as you like — and take it away again",
   "Give a photo or a video one to five stars",
   "Filter by photos or videos, by stars and by folder; newest first, oldest first, by name or by stars",
-  "Details on one to save it or share it; other Quills add their buttons there (CutMorrow's Edit this video)",
+  "Details on one to save it or share it; other Quills add their buttons there (Clipper's Edit this video)",
   "The same on the web and the phone, in the terminal (the picture beside the list) and on the command line",
 ]
 
