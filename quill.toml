@@ -9,9 +9,9 @@
 [quill]
 id = "media"
 name = "Media"
-version = "1.2.1"
+version = "1.2.2"
 summary = "Every photo and video in your drive, as pictures: filter them and give them stars."
-category = "personal"
+category = "creative"
 icon = "picture-frame"
 publisher = "Cloudmorrow"
 license = "AGPL-3.0-or-later"
